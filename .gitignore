@@ -116,4 +116,6 @@ coverage.xml
 # Django stuff:
 *.log
 
+secrets.txt
+
 
