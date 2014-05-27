@@ -251,6 +251,8 @@ class Photo(object):
 
             photo = Photo(id=id, created_time=created_time, uploader=uploader,
                           height=height, width=width, source=source)
+            return photo
+        
         except KeyError:
             raise FacebookException("The given information was incomplete.")
 
