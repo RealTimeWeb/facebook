@@ -302,7 +302,7 @@ class FacebookUser(object):
         return string
 
     def _to_dict(self):
-        return {'albums': self.albums, 'feed': self.feed,  'ikes': self.likes,
+        return {'albums': self.albums, 'feed': self.feed,  'likes': self.likes,
                 'name': self.name, 'notifications': self.notifications,
                 'photos': self.photos, 'statuses': self.statuses}
 
