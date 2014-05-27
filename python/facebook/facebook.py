@@ -2,7 +2,13 @@ from __future__ import print_function
 import sys
 import json
 
-HEADER = {'User-Agent': 'RealTimeWeb Stock library for educational purposes'}
+# Embed your own keys for simplicity
+ACCESS_TOKEN = "your key goes here"
+# Remove these lines; we just do this for our own simplicity
+with open('secrets.txt', 'r') as secrets:
+    ACCESS_TOKEN = secrets.readline()
+
+HEADER = {'User-Agent': 'RealTimeWeb Facebook library for educational purposes'}
 PYTHON_3 = sys.version_info >= (3, 0)
 
 if PYTHON_3:
@@ -215,9 +221,22 @@ def disconnect(filename="./cache.json"):
 class FacebookException(Exception):
     pass
 
+
 ################################################################################
 # Domain Objects
 ################################################################################
+
+
+class Message:
+    pass
+
+
+class Like:
+    pass
+
+
+class Status:
+    pass
 
 
 class FacebookUser(object):
@@ -310,12 +329,12 @@ class FacebookUser(object):
             statuses = json_dict['statuses']['data']
 
             user = FacebookUser(albums=albums,
-                                 feed=feed,
-                                 likes=likes,
-                                 name=name,
-                                 notifications=notifications,
-                                 photos=photos,
-                                 statuses=statuses)
+                                feed=feed,
+                                likes=likes,
+                                name=name,
+                                notifications=notifications,
+                                photos=photos,
+                                statuses=statuses)
             return user
         except KeyError:
             raise FacebookException("The given information was incomplete.")
@@ -360,23 +379,13 @@ def _fetch_facebook_info(params):
     return json_res
 
 
-def get_facebook_information(access_token):
+def get_facebook_information(access_token=None):
     """
     """
-    if not isinstance(access_token, str):
-        raise FacebookException("Please provide a string access token")
+    if access_token is None:
+        disconnect()
 
     fields = 'albums,feed,likes,name,notifications,photos,statuses'
-
-    #
-    # self.albums = albums
-    # self.feed = feed
-    # self.friends_lists = friends_lists
-    # self.likes = likes
-    # self.name = name
-    # self.notifications = notifications
-    # self.photos = photos
-    # self.statuses = statuses
 
     params = {'fields': fields, 'access_token': access_token}
 
@@ -385,4 +394,10 @@ def get_facebook_information(access_token):
 
     return user._to_dict()
 
-# CAACEdEose0cBAAZAzcYnLkhdInZASeUI53cg8eu2EGZCXg1LSeocZBBZB9afRhRVasiYZBnZA2TqZBdZBIdouJOiDKIGdc7XnY0t3bZA6ex3DArs8DfN1votWvOtbZCVQgSjbPN3X0GTBnaSFZBETnLGdZCajmY1ev27eBPr3wMO6ydmzNhRZA7ViRXAohlIJeVr89syQZD
+
+def get_messages(access_token=None):
+    if access_token is None:
+        disconnect()
+
+    return
+

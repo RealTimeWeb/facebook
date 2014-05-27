@@ -1,7 +1,12 @@
 import unittest
 from python.facebook import facebook
 
-token = 'CAACEdEose0cBAMvy9I8NR6981KGjRc8QK4E1KyT6CLxZASbAD0b5ZCI4QNIGYLkb1PuypJZCZAsf4Ky2PWja8TpTqSJpBtK69efF4ZAyW3hoXyb2w8hGhTqe3ZBNDkxaO2kapV3lvaS439WELSUuu2hdVo5igLfHEo0BSBGXbEQ7U78JaoBFtEAsGnpuyc5KgZD'
+# Embed your own keys for simplicity
+ACCESS_TOKEN = "your key goes here"
+# Remove these lines; we just do this for our own simplicity
+with open('../facebook/secrets.txt', 'r') as secrets:
+    ACCESS_TOKEN = secrets.readline()
+
 
 class TestFacebook(unittest.TestCase):
 
@@ -12,7 +17,7 @@ class TestFacebook(unittest.TestCase):
                 'photos', 'statuses']
 
         # Test getting one stock
-        user_dict = facebook.get_facebook_information(token)
+        user_dict = facebook.get_facebook_information(ACCESS_TOKEN)
         print(user_dict)
         # self.assertTrue(isinstance(stock, dict))
         #
