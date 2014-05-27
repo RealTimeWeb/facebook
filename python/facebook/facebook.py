@@ -227,8 +227,25 @@ class FacebookException(Exception):
 ################################################################################
 
 class Photo(object):
+
+    """
+    A Facebook photo
+    """
     def __init__(self, id=None, created_time=None, uploader=None, height=None,
                  width=None, source=None):
+        """
+        Creates a new photo object
+
+        :param int id: the Facebook id of the photo
+        :param str created_time: the time and date the photo was uploaded
+        :param uploader: the uploader of the photo
+        #TODO: set uploader type
+        :param int height: the height of the photo
+        :param int width: the width of the photo
+        :param str source: the url of the source image
+        :returns: Photo
+        """
+
         self.id = id
         self.created_time = created_time
         self.uploader = uploader
@@ -238,13 +255,20 @@ class Photo(object):
 
     @staticmethod
     def _from_json(json_data):
+        """
+        Creates a Photo from JSON data
+
+        :param json_data: the raw JSON from the GET request to parse
+        :returns: Photo
+        """
+
         if json_data is None:
             return FacebookUser()
         try:
             json_dict = json_data[0]
             id = json_dict['id']
             created_time = json_dict['created_time']
-            uploader = json_dict['from'] #TODO: wrap
+            uploader = json_dict['from']  # TODO: wrap
             height = json_dict['images'][0]['height']
             width = json_dict['images'][0]['width']
             source = json_dict['images'][0]['source']
@@ -252,7 +276,7 @@ class Photo(object):
             photo = Photo(id=id, created_time=created_time, uploader=uploader,
                           height=height, width=width, source=source)
             return photo
-        
+
         except KeyError:
             raise FacebookException("The given information was incomplete.")
 
@@ -274,7 +298,7 @@ class Status:
 class FacebookUser(object):
 
     """
-    A facebook user
+    A Facebook user
     """
     def __init__(self, albums=None, feed=None, likes=None,
                  name=None, notifications=None, photos=None, statuses=None):
