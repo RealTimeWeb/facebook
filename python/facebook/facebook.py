@@ -226,6 +226,36 @@ class FacebookException(Exception):
 # Domain Objects
 ################################################################################
 
+class Photo(object):
+    def __init__(self, id=None, created_time=None, uploader=None, height=None,
+                 width=None, source=None):
+        self.id = id
+        self.created_time = created_time
+        self.uploader = uploader
+        self.height = height
+        self.width = width
+        self.source = source
+
+    @staticmethod
+    def _from_json(json_data):
+        if json_data is None:
+            return FacebookUser()
+        try:
+            json_dict = json_data[0]
+            id = json_dict['id']
+            created_time = json_dict['created_time']
+            uploader = json_dict['from'] #TODO: wrap
+            height = json_dict['images'][0]['height']
+            width = json_dict['images'][0]['width']
+            source = json_dict['images'][0]['source']
+
+            photo = Photo(id=id, created_time=created_time, uploader=uploader,
+                          height=height, width=width, source=source)
+        except KeyError:
+            raise FacebookException("The given information was incomplete.")
+
+
+
 
 class Message:
     pass
