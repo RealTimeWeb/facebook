@@ -304,7 +304,9 @@ class Like(object):
         if json_data is None:
             return Like()
         try:
-            category = json_data['category']  # We need to fix this
+
+            category = json_data['category']  # Not really sure what PyCharm
+            # has a problem with...
             name = json_data['name']
             like = Like(category=category, name=name)
             return like
