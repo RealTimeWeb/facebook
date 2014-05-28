@@ -292,22 +292,25 @@ class Like(object):
         self.category = category
         self.name = name
 
+    def _to_dict(self):
+        return {'name': self.name, 'category': self.category}
+
     @staticmethod
     def _from_json(json_data):
         """
         Creates a Like from JSON data
 
-        :param str json_data: the JSON to parse, in this case a like
+        :param list json_data: the JSON to parse, in this case a like
         :returns: a Like object
         """
 
         if json_data is None:
             return Like()
         try:
-
-            category = json_data['category']  # Not really sure what PyCharm
+            json_dict = json_data[0]
+            category = json_dict['category']  # Not really sure what PyCharm
             # has a problem with...
-            name = json_data['name']
+            name = json_dict['name']
             like = Like(category=category, name=name)
             return like
         except KeyError:
@@ -318,7 +321,7 @@ class Status:
     pass
 
 
-class FacebookUser(object):
+class FacebookProfile(object):
 
     """
     A Facebook user
@@ -379,7 +382,7 @@ class FacebookUser(object):
         return string
 
     def _to_dict(self):
-        return {'albums': self.albums, 'feed': self.feed,  'likes': self.likes,
+        return {'albums': self.albums, 'feed': self.feed, 'likes': [like._to_dict() for like in self.likes],
                 'name': self.name, 'notifications': self.notifications,
                 'photos': self.photos, 'statuses': self.statuses}
 
@@ -394,20 +397,18 @@ class FacebookUser(object):
         """
 
         if json_data is None:
-            return FacebookUser()
+            return FacebookProfile()
         try:
             json_dict = json_data[0]
-            # albums = json_dict['albums']['data']
-            # feed = json_dict['feed']['data']
-            likes = json_dict['likes']['data']
-            list_of_likes = [Like(name=like['name'], category=like['category']) for like in likes]
-            # name = json_dict['name']
-            # notifications = json_dict['notifications']['data']
-            # photos = json_dict['photos']['data']
-            statuses = json_dict['statuses']['data']
 
-            user = FacebookUser(likes=likes,
-                                statuses=statuses)
+            likes = json_dict['likes']['data']
+            list_of_likes = [Like(name=like['name'],
+                                  category=like['category']) for like in likes]
+
+            statuses = json_dict['statuses']['data']
+            # list_of_statuses =
+
+            user = FacebookProfile(likes=list_of_likes, statuses=statuses)
             return user
         except KeyError:
             raise FacebookException("The given information was incomplete.")
@@ -459,12 +460,12 @@ def get_facebook_information(access_token=None):
     if access_token is None:
         disconnect()
 
-    fields = 'albums,likes'
+    fields = 'likes,statuses'
 
     params = {'fields': fields, 'access_token': access_token}
 
     json_res = _fetch_facebook_info(params)
-    user = FacebookUser._from_json(json_res)
+    user = FacebookProfile._from_json(json_res)
 
     return user._to_dict()
 
