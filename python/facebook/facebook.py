@@ -2,12 +2,6 @@ from __future__ import print_function
 import sys
 import json
 
-# Embed your own keys for simplicity
-ACCESS_TOKEN = "your key goes here"
-# Remove these lines; we just do this for our own simplicity
-with open('secrets.txt', 'r') as secrets:
-    ACCESS_TOKEN = secrets.readline()
-
 HEADER = {'User-Agent': 'RealTimeWeb Facebook library for educational purposes'}
 PYTHON_3 = sys.version_info >= (3, 0)
 
@@ -265,21 +259,19 @@ class Photo(object):
         if json_data is None:
             return Photo()
         try:
-            id_ = json_data['id']
+            photo_id = json_data['id']
             created_time = json_data['created_time']
             uploader = json_data['from']  # TODO: wrap?
             height = json_data['images'][0]['height']
             width = json_data['images'][0]['width']
             source = json_data['images'][0]['source']
 
-            photo = Photo(id=id_, created_time=created_time, uploader=uploader,
+            photo = Photo(id=photo_id, created_time=created_time, uploader=uploader,
                           height=height, width=width, source=source)
             return photo
 
         except KeyError:
             raise FacebookException("The given information was incomplete.")
-
-
 
 
 class Message:
@@ -375,20 +367,16 @@ class FacebookUser(object):
             return FacebookUser()
         try:
             json_dict = json_data[0]
-            albums = json_dict['albums']['data']
-            feed = json_dict['feed']['data']
+            # albums = json_dict['albums']['data']
+            # feed = json_dict['feed']['data']
             likes = json_dict['likes']['data']
-            name = json_dict['name']
-            notifications = json_dict['notifications']['data']
-            photos = json_dict['photos']['data']
+            list_of_likes = [Like(name=like['name'], category=like['category']) for like in likes]
+            # name = json_dict['name']
+            # notifications = json_dict['notifications']['data']
+            # photos = json_dict['photos']['data']
             statuses = json_dict['statuses']['data']
 
-            user = FacebookUser(albums=albums,
-                                feed=feed,
-                                likes=likes,
-                                name=name,
-                                notifications=notifications,
-                                photos=photos,
+            user = FacebookUser(likes=likes,
                                 statuses=statuses)
             return user
         except KeyError:
@@ -440,7 +428,7 @@ def get_facebook_information(access_token=None):
     if access_token is None:
         disconnect()
 
-    fields = 'albums,feed,likes,name,notifications,photos,statuses'
+    fields = 'albums,likes'
 
     params = {'fields': fields, 'access_token': access_token}
 
