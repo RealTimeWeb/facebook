@@ -313,8 +313,36 @@ class Like(object):
             raise FacebookException("The given information was incomplete.")
 
 
-class Status:
-    pass
+class Status(object):
+    """
+    A Facebook user's post
+    """
+    def __init__(self, message=None, tags=None, likes=None):
+        """
+        Creates a new Status object
+
+        :param str message: The actual text of the status
+        :param tags: list of users tagged in the status. Currently broken
+        :param likes: list of users who have liked the status
+        """
+
+        self.message = message
+        self.tags = tags
+        self.likes = likes
+
+    @staticmethod
+    def _from_json(json_data):
+        """
+        Creates a new Status object from JSON data
+
+        :param str json_data: The raw JSON to parse, in this case a status dump
+        :returns: a new Status object
+        """
+
+        message = json_data['message']
+        likes = json_data['likes']
+        status = Status(message=message, likes=likes)
+        return status
 
 
 class FacebookUser(object):
