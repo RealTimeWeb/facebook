@@ -308,8 +308,7 @@ class Like(object):
             return Like()
         try:
             json_dict = json_data[0]
-            category = json_dict['category']  # Not really sure what PyCharm
-            # has a problem with...
+            category = json_dict['category']
             name = json_dict['name']
             like = Like(category=category, name=name)
             return like

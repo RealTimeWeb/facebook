@@ -1,8 +1,6 @@
 import unittest
 from python.facebook import facebook
 
-# Embed your own keys for simplicity
-ACCESS_TOKEN = "your key goes here"
 # Remove these lines; we just do this for our own simplicity
 with open('../facebook/secrets.txt', 'r') as secrets:
     ACCESS_TOKEN = secrets.readline()
@@ -13,17 +11,33 @@ class TestFacebook(unittest.TestCase):
     def test_get_facebook_information(self):
         facebook.connect()
 
-        keys = ['albums', 'feed', 'friendslist', 'likes', 'name', 'notifications',
-                'photos', 'statuses']
+        keys = ['likes', 'statuses']
 
-        # Test getting one stock
         user_dict = facebook.get_facebook_information(ACCESS_TOKEN)
-        print(user_dict)
-        # self.assertTrue(isinstance(stock, dict))
-        #
-        # # Assert all of the keys are in the stock
-        # intersection = set(keys).intersection(stock)
-        # self.assertEqual(6, len(intersection))
+        self.assertTrue(isinstance(user_dict, dict))
+        intersection = set(keys).intersection(user_dict)
+        self.assertEqual(2, len(intersection))
+
+        # Assure that the list of like dicts contain the following keys
+        like_keys = ['name', 'category']
+
+        likes = user_dict['likes']
+        self.assertTrue(isinstance(like_keys, list))
+        for like in likes:
+            self.assertTrue(isinstance(like, dict))
+            intersection = set(like_keys).intersection(like)
+            self.assertEqual(2, len(intersection))
+
+        # Assure that the list of status dicts contain the following keys
+        status_keys = ['message', 'from', 'id', 'updated_time']
+
+        statuses = user_dict['statuses']
+        self.assertTrue(isinstance(status_keys, list))
+        for status in statuses:
+            self.assertTrue(isinstance(status, dict))
+            intersection = set(status_keys).intersection(status)
+            self.assertEqual(2, len(intersection))
+
     #
     # def test_get_stock_offline(self):
     #     facebook.disconnect("../facebook/cache.json")
