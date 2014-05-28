@@ -339,12 +339,12 @@ class Status(object):
         """
         Creates a new Status object from JSON data
 
-        :param str json_data: The raw JSON to parse, in this case a status dump
+        :param list json_data: The raw JSON to parse, in this case a status dump
         :returns: a new Status object
         """
-
-        message = json_data['message']
-        likes = json_data['likes']
+        json_dict = json_data[0]
+        message = json_dict['message']
+        likes = json_dict['likes']
         status = Status(message=message, likes=likes)
         return status
 
