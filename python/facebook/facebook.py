@@ -258,22 +258,21 @@ class Photo(object):
         """
         Creates a Photo from JSON data
 
-        :param json_data: the raw JSON from the GET request to parse
+        :param json_data: JSON to parse, in this case a photo from an album[]
         :returns: Photo
         """
 
         if json_data is None:
-            return FacebookUser()
+            return Photo()
         try:
-            json_dict = json_data[0]
-            id = json_dict['id']
-            created_time = json_dict['created_time']
-            uploader = json_dict['from']  # TODO: wrap
-            height = json_dict['images'][0]['height']
-            width = json_dict['images'][0]['width']
-            source = json_dict['images'][0]['source']
+            id_ = json_data['id']
+            created_time = json_data['created_time']
+            uploader = json_data['from']  # TODO: wrap?
+            height = json_data['images'][0]['height']
+            width = json_data['images'][0]['width']
+            source = json_data['images'][0]['source']
 
-            photo = Photo(id=id, created_time=created_time, uploader=uploader,
+            photo = Photo(id=id_, created_time=created_time, uploader=uploader,
                           height=height, width=width, source=source)
             return photo
 
@@ -369,7 +368,7 @@ class FacebookUser(object):
 
         :param json_data: The raw json data to parse
         :type json_data: dict
-        :returns: Stock
+        :returns: FacebookUser
         """
 
         if json_data is None:
@@ -456,4 +455,17 @@ def get_messages(access_token=None):
         disconnect()
 
     return
+
+
+def _get_photos(album):
+    """
+    Given a single album, returns a list of Photo objects
+
+    :param dict album: the album to get the photos from
+    :returns: list of Photos
+    """
+    photolist = []
+    for photo in album['photos']['data']:
+        photolist.append(Photo._from_json(photo))
+    return photolist
 
