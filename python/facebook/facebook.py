@@ -234,7 +234,7 @@ class Photo(object):
     def __init__(self, id=None, created_time=None, uploader=None, height=None,
                  width=None, source=None):
         """
-        Creates a new photo object
+        Creates a new photo object.
 
         :param int id: the Facebook id of the photo
         :param str created_time: the time and date the photo was uploaded
@@ -243,7 +243,6 @@ class Photo(object):
         :param int height: the height of the photo
         :param int width: the width of the photo
         :param str source: the url of the source image
-        :returns: Photo
         """
 
         self.id = id
@@ -256,7 +255,7 @@ class Photo(object):
     @staticmethod
     def _from_json(json_data):
         """
-        Creates a Photo from JSON data
+        Creates a Photo from JSON data.
 
         :param json_data: JSON to parse, in this case a photo from an album[]
         :returns: Photo
@@ -280,14 +279,43 @@ class Photo(object):
             raise FacebookException("The given information was incomplete.")
 
 
-
-
 class Message:
     pass
 
 
-class Like:
-    pass
+class Like(object):
+    """
+    A Facebook page the user has liked.
+    """
+    def __init__(self, category=None, name=None):
+        """
+        Creates a new Like object.
+
+        :param str category: The top-level category of the page
+        :param str name: The name of the Facebook page
+        """
+
+        self.category = category
+        self.name = name
+
+    @staticmethod
+    def _from_json(json_data):
+        """
+        Creates a Like from JSON data
+
+        :param str json_data: the JSON to parse, in this case a like
+        :returns: a Like object
+        """
+
+        if json_data is None:
+            return Like()
+        try:
+            category = json_data['category']
+            name = json_data['name']
+            like = Like(category=category, name=name)
+            return like
+        except KeyError:
+            raise FacebookException("The given information was incomplete.")
 
 
 class Status:
@@ -325,8 +353,6 @@ class FacebookUser(object):
 
         :param statuses: A list of statuses where each status is a dictionary.
         :type statuses: list
-
-        :returns: FacebookUser
         """
 
         self.albums = albums
@@ -427,7 +453,8 @@ def _fetch_facebook_info(params):
     try:
         if _CONNECTED and _EDITABLE:
             _add_to_cache(query, result)
-        json_res = json.loads('[' + result + ']')  # Facebook does not return a list, but returns a string
+        json_res = json.loads('[' + result + ']')  # Facebook does not return a
+                                                    # list, but returns a string
     except ValueError:
         raise FacebookException("Internal Error")
 
