@@ -1,7 +1,7 @@
 import unittest
 
 import sys
-sys.path.append("../facebook")
+sys.path.append("../src")
 
 try:
     import facebook
