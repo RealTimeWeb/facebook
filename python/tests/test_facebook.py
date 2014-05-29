@@ -1,5 +1,12 @@
 import unittest
-from python.facebook import facebook
+
+#from python.facebook import facebook
+
+import sys
+sys.path.append("../facebook")
+
+import facebook
+
 
 # Remove these lines; we just do this for our own simplicity
 with open('../facebook/secrets.txt', 'r') as secrets:
@@ -36,7 +43,7 @@ class TestFacebook(unittest.TestCase):
         for status in statuses:
             self.assertTrue(isinstance(status, dict))
             intersection = set(status_keys).intersection(status)
-            self.assertEqual(2, len(intersection))
+            self.assertEqual(4, len(intersection))
 
     #
     # def test_get_stock_offline(self):

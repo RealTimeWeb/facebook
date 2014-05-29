@@ -485,6 +485,7 @@ def get_facebook_information(access_token=None):
     """
     """
     if access_token is None:
+        print("Working in offline mode (no access token given).")
         disconnect()
 
     fields = 'likes,statuses'
@@ -499,6 +500,7 @@ def get_facebook_information(access_token=None):
 
 def get_messages(access_token=None):
     if access_token is None:
+        print("Working in offline mode (no access token given).")
         disconnect()
 
     return
