@@ -1,5 +1,5 @@
 import unittest
-from python.facebook import facebook
+from python.src import facebook
 
 # Remove these lines; we just do this for our own simplicity
 with open('../facebook/secrets.txt', 'r') as secrets:
@@ -36,17 +36,17 @@ class TestFacebook(unittest.TestCase):
         for status in statuses:
             self.assertTrue(isinstance(status, dict))
             intersection = set(status_keys).intersection(status)
-            self.assertEqual(2, len(intersection))
+            self.assertEqual(4, len(intersection))
 
     #
     # def test_get_stock_offline(self):
-    #     facebook.disconnect("../facebook/cache.json")
+    #     src.disconnect("../src/cache.json")
     #
     #     keys = ['change_number', 'change_percentage', 'exchange_name',
     #             'last_trade_date_and_time', 'last_trade_price', 'ticker_name']
     #
     #     # Test getting one stock
-    #     stock = facebook.get_stock_information("AAPL")
+    #     stock = src.get_stock_information("AAPL")
     #     self.assertTrue(isinstance(stock, dict))
     #
     #     # Assert all of the keys are in the stock
@@ -54,32 +54,35 @@ class TestFacebook(unittest.TestCase):
     #     self.assertEqual(6, len(intersection))
     #
     # def test_throw_exception(self):
-    #     facebook.connect()
+    #     src.connect()
     #
-    #     with self.assertRaises(facebook.FacebookException) as context:
-    #         facebook.get_stock_information(["AAPL"])
-    #
-    #     self.assertEqual('Please enter a string of Stock Tickers', context.exception.args[0])
-    #
-    #     with self.assertRaises(facebook.FacebookException) as context:
-    #         facebook.get_stock_information(1)
+    #     with self.assertRaises(src.FacebookException) as context:
+    #         src.get_stock_information(["AAPL"])
     #
     #     self.assertEqual('Please enter a string of Stock Tickers', context.exception.args[0])
     #
-    #     with self.assertRaises(facebook.FacebookException) as context:
-    #         facebook.get_stock_information("INVALID_STOCK")
+    #     with self.assertRaises(src.FacebookException) as context:
+    #         src.get_stock_information(1)
+    #
+    #     self.assertEqual('Please enter a string of Stock Tickers', context.exception.args[0])
+    #
+    #     with self.assertRaises(src.FacebookException) as context:
+    #         src.get_stock_information("INVALID_STOCK")
     #
     #     self.assertEqual('Make sure you entered a valid stock', context.exception.args[0])
     #
     # def test_get_json(self):
     #
-    #     appl = facebook.Stock(-1.16, -0.19, 'NASDAQ', 603.55, 'May 21, 11:26AM EDT','AAPL')
+    #     appl = src.Stock(-1.16, -0.19, 'NASDAQ', 603.55, 'May 21, 11:26AM EDT','AAPL')
     #     appl_dict = appl._to_dict()
     #
-    #     facebook.disconnect("../facebook/cache.json")
-    #     json_res = facebook._fetch_stock_info({'q': 'AAPL'})
-    #     cache_stock = facebook.Stock._from_json(json_res)
+    #     src.disconnect("../src/cache.json")
+    #     json_res = src._fetch_stock_info({'q': 'AAPL'})
+    #     cache_stock = src.Stock._from_json(json_res)
     #     cache_dict = cache_stock._to_dict()
     #
     #     self.assertDictEqual(cache_dict, appl_dict)
     #
+
+if __name__ == "__main__":
+    unittest.main()
