@@ -77,10 +77,14 @@ def _recursively_convert_unicode_to_str(input):
     """
     Force the given input to only use `str` instead of `bytes` or `unicode`.
 
-    This works even if the input is a dict, list,
+    This works even if the input is a dict, list, or a string.
+
+    :params input: The bytes/unicode input dic
     """
     if isinstance(input, dict):
-        return {_recursively_convert_unicode_to_str(key): _recursively_convert_unicode_to_str(value) for key, value in input.items()}
+        return {_recursively_convert_unicode_to_str(
+            key): _recursively_convert_unicode_to_str(value) for key, value in
+                input.items()}
     elif isinstance(input, list):
         return [_recursively_convert_unicode_to_str(element) for element in input]
     elif not PYTHON_3:
@@ -223,7 +227,10 @@ class FacebookException(Exception):
 class Photo(object):
 
     """
-    A Facebook photo
+    Partial implementation. Remains here for demonstrative purposes, to show
+    the ability of the API to collect, parse, and distribute photo data.
+
+    A Facebook photo.
     """
     def __init__(self, id=None, created_time=None, uploader=None, height=None,
                  width=None, source=None):
@@ -274,6 +281,10 @@ class Photo(object):
 
 
 class Message:
+    """
+    Unimplemented due to privacy reasons. Remains here for the purposes
+    of showing that the API can support message data.
+    """
     pass
 
 
@@ -293,6 +304,11 @@ class Like(object):
         self.name = name
 
     def _to_dict(self):
+        """
+        Creates a dictionary of the information stored in the Like object.
+
+        :returns: a dictionary with the Like attributes
+        """
         return {'name': self.name, 'category': self.category}
 
     @staticmethod
@@ -390,7 +406,7 @@ class FacebookProfile(object):
         self.statuses = statuses
 
     def __unicode__(self):
-        return "<FacebookUser Name: {}>".format(self.name)
+        return u"<FacebookUser Name: {}>".format(self.name)
 
     def __repr__(self):
         string = self.__unicode__()
@@ -409,6 +425,11 @@ class FacebookProfile(object):
         return string
 
     def _to_dict(self):
+        """
+        Creates a dictionary with all the attributes of the FacebookUser
+
+        :returns: dictionary with the FacebookUser's information
+        """
         return {'albums': self.albums, 'feed': self.feed, 'likes': [like._to_dict() for like in self.likes],
                 'name': self.name, 'notifications': self.notifications,
                 'photos': self.photos, 'statuses': self.statuses}
@@ -483,6 +504,11 @@ def _fetch_facebook_info(params):
 
 def get_facebook_information(access_token=None):
     """
+    External function to pass the access token to the server and form
+    and return the response.
+
+    :param str access_token: the secret used to authenticate to Facebook
+    :returns: a dictionary containing the information of the user
     """
     if access_token is None:
         print("Working in offline mode (no access token given).")
@@ -499,6 +525,11 @@ def get_facebook_information(access_token=None):
 
 
 def get_messages(access_token=None):
+    """
+    Unimplemented due to privacy concerns, but remains here for documentation
+    and informational purposes. Would be used to harvest "messages" data from
+    the Facebook user.
+    """
     if access_token is None:
         print("Working in offline mode (no access token given).")
         disconnect()
@@ -508,6 +539,7 @@ def get_messages(access_token=None):
 
 def _get_photos(album):
     """
+    Partial implementation.
     Given a single album, returns a list of Photo objects
 
     :param dict album: the album to get the photos from
