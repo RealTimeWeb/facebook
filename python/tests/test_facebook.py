@@ -1,8 +1,15 @@
 import unittest
-from python.src import facebook
+
+import sys
+sys.path.append("../facebook")
+
+try:
+    import facebook
+except ImportError:
+    from python.src import facebook
 
 # Remove these lines; we just do this for our own simplicity
-with open('../facebook/secrets.txt', 'r') as secrets:
+with open('../src/secrets.txt', 'r') as secrets:
     ACCESS_TOKEN = secrets.readline()
 
 
