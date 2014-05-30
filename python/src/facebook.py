@@ -476,11 +476,12 @@ class FacebookProfile(object):
 ################################################################################
 
 
-def _fetch_facebook_info(fbid, params):
+def _fetch_facebook_info(params, fbid):
     """
     Internal method to form and query the server
 
     :param dict params: the parameters to pass to the server
+    :param fbid: id of the thing to look up, defaults to "me"
     :returns: the JSON response object
     """
     baseurl = 'https://graph.facebook.com/{}'.format(fbid)
@@ -511,26 +512,24 @@ def _fetch_facebook_info(fbid, params):
     return json_res
 
 
-def get_facebook_information(access_token=None, fbid=None):
+def get_facebook_information(access_token=None, fbid="me"):
     """
     External function to pass the access token to the server and form
     and return the response.
 
     :param str access_token: the secret used to authenticate to Facebook
+    :param fbid: the id of the user to look up, defaults to "me"
     :returns: a dictionary containing the information of the user
     """
     if access_token is None:
         print("Working in offline mode (no access token given).")
         disconnect()
 
-    if not fbid:
-        fbid = "me"
-
     fields = 'id,name,likes,statuses'
 
     params = {'fields': fields, 'access_token': access_token}
 
-    json_res = _fetch_facebook_info(fbid, params)
+    json_res = _fetch_facebook_info(params, fbid)
     user = FacebookProfile._from_json(json_res)
 
     return user._to_dict()
