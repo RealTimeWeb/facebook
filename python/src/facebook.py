@@ -369,14 +369,14 @@ class FacebookProfile(object):
     """
     A Facebook user
     """
-    def __init__(self, id=None, albums=None, feed=None, likes=None,
+    def __init__(self, fb_id=None, albums=None, feed=None, likes=None,
                  name=None, notifications=None, photos=None, statuses=None):
 
         """
         Creates a new FacebookUser
 
-        :param id: The Facebook ID of the user
-        :type id: int
+        :param fb_id: The Facebook ID of the user
+        :tyfb_id id: int
 
         :param albums: A list of albums where each album is a dictionary.
         :type albums: list
@@ -390,7 +390,8 @@ class FacebookProfile(object):
         :param name: Your name.
         :type name: str
 
-        :param notifications: A list of notifications where each notification is a dictionary.
+        :param notifications: A list of notifications where each notification
+        is a dictionary.
         :type notifications: list
 
         :param photos: A list of photos where each photo is a dictionary.
@@ -400,7 +401,7 @@ class FacebookProfile(object):
         :type statuses: list
         """
 
-        self.id = id
+        self.id = fb_id
         self.albums = albums
         self.feed = feed
         self.likes = likes
@@ -464,7 +465,7 @@ class FacebookProfile(object):
             fb_id = json_dict['id']
             name = json_dict['name']
 
-            user = FacebookProfile(id=fb_id, name=name, likes=list_of_likes,
+            user = FacebookProfile(fb_id=fb_id, likes=list_of_likes, name=name,
                                    statuses=statuses)
             return user
         except KeyError:
@@ -476,15 +477,15 @@ class FacebookProfile(object):
 ################################################################################
 
 
-def _fetch_facebook_info(params, fbid):
+def _fetch_facebook_info(params, fb_id):
     """
     Internal method to form and query the server
 
     :param dict params: the parameters to pass to the server
-    :param fbid: id of the thing to look up, defaults to "me"
+    :param fb_id: id of the thing to look up, defaults to "me"
     :returns: the JSON response object
     """
-    baseurl = 'https://graph.facebook.com/{}'.format(fbid)
+    baseurl = 'https://graph.facebook.com/{}'.format(fb_id)
     query = _urlencode(baseurl, params)
 
     if PYTHON_3:
@@ -512,13 +513,13 @@ def _fetch_facebook_info(params, fbid):
     return json_res
 
 
-def get_facebook_information(access_token=None, fbid="me"):
+def get_facebook_information(access_token=None, fb_id="me"):
     """
     External function to pass the access token to the server and form
     and return the response.
 
     :param str access_token: the secret used to authenticate to Facebook
-    :param fbid: the id of the user to look up, defaults to "me"
+    :param fb_id: the id of the user to look up, defaults to "me"
     :returns: a dictionary containing the information of the user
     """
     if access_token is None:
@@ -529,7 +530,7 @@ def get_facebook_information(access_token=None, fbid="me"):
 
     params = {'fields': fields, 'access_token': access_token}
 
-    json_res = _fetch_facebook_info(params, fbid)
+    json_res = _fetch_facebook_info(params, fb_id)
     user = FacebookProfile._from_json(json_res)
 
     return user._to_dict()
