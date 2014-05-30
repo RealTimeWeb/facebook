@@ -561,4 +561,48 @@ def _get_photos(album):
         photolist.append(Photo._from_json(photo))
     return photolist
 
-#TODO: given a facebook user, return a list of his friends' friends
+
+def _get_friends_list(access_token=None, fbid='me'):
+    """
+    Private helper function to get lists of friend ids
+    :param int access_token: the access token needed for the API call
+    :param fbid: user to grab the friends of
+    :return: list of ids (the user's friends)
+    """
+
+    if not access_token:
+        print("Working in offline mode (no access token given).")
+        disconnect()
+
+    params = {'fields': 'friends', 'access_token': access_token}
+    friend_json = _fetch_facebook_info(params, fbid)
+    json_list = friend_json['friends']['data']
+    friend_list = []
+    for friend in json_list:
+        friend_list.append(friend['id'])
+
+    return friend_list
+
+
+def _get_friend_graph(access_token=None, fbid='me'):
+    """
+    Given a user, collect a list of that user's friends. Then, collect lists
+    of all the friends of those users.
+    :param int access_token: the access token needed for the API call
+    :param int fbid: the user to build a friend graph of
+    :return: a dictionary of IDs (the user's friends), mapped to lists of IDs
+    (the friends of those friends)
+    """
+
+    if not access_token:
+        print("Working in offline mode (no access token given).")
+        disconnect()
+
+    friend_graph = {}
+    list_json = _get_friends_list(access_token, fbid)
+    first_list = list_json['friends']['data']
+    for friend in first_list:
+        friend_graph[friend['id']] = _get_friends_list(access_token, friend[
+            'id'])
+
+    return friend_graph
