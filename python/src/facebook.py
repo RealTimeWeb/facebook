@@ -195,7 +195,7 @@ def connect():
     _CONNECTED = True
 
 
-def disconnect(filename="./cache.json"):
+def disconnect(filename="../src/cache.json"):
     """
     Connect to the local cache, so no internet connection is required.
 
@@ -476,14 +476,14 @@ class FacebookProfile(object):
 ################################################################################
 
 
-def _fetch_facebook_info(params):
+def _fetch_facebook_info(fbid, params):
     """
     Internal method to form and query the server
 
     :param dict params: the parameters to pass to the server
     :returns: the JSON response object
     """
-    baseurl = 'https://graph.facebook.com/me'
+    baseurl = 'https://graph.facebook.com/{}'.format(fbid)
     query = _urlencode(baseurl, params)
 
     if PYTHON_3:
@@ -511,7 +511,7 @@ def _fetch_facebook_info(params):
     return json_res
 
 
-def get_facebook_information(access_token=None):
+def get_facebook_information(access_token=None, fbid=None):
     """
     External function to pass the access token to the server and form
     and return the response.
@@ -523,11 +523,14 @@ def get_facebook_information(access_token=None):
         print("Working in offline mode (no access token given).")
         disconnect()
 
+    if not fbid:
+        fbid = "me"
+
     fields = 'id,name,likes,statuses'
 
     params = {'fields': fields, 'access_token': access_token}
 
-    json_res = _fetch_facebook_info(params)
+    json_res = _fetch_facebook_info(fbid, params)
     user = FacebookProfile._from_json(json_res)
 
     return user._to_dict()
