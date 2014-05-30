@@ -369,11 +369,14 @@ class FacebookProfile(object):
     """
     A Facebook user
     """
-    def __init__(self, albums=None, feed=None, likes=None,
+    def __init__(self, id=None, albums=None, feed=None, likes=None,
                  name=None, notifications=None, photos=None, statuses=None):
 
         """
         Creates a new FacebookUser
+
+        :param id: The Facebook ID of the user
+        :type id: int
 
         :param albums: A list of albums where each album is a dictionary.
         :type albums: list
@@ -397,6 +400,7 @@ class FacebookProfile(object):
         :type statuses: list
         """
 
+        self.id = id
         self.albums = albums
         self.feed = feed
         self.likes = likes
@@ -430,7 +434,8 @@ class FacebookProfile(object):
 
         :returns: dictionary with the FacebookUser's information
         """
-        return {'albums': self.albums, 'feed': self.feed, 'likes': [like._to_dict() for like in self.likes],
+        return {'id': self.id, 'albums': self.albums, 'feed': self.feed,
+                'likes': [like._to_dict() for like in self.likes],
                 'name': self.name, 'notifications': self.notifications,
                 'photos': self.photos, 'statuses': self.statuses}
 
@@ -456,7 +461,11 @@ class FacebookProfile(object):
             statuses = json_dict['statuses']['data']
             # list_of_statuses =
 
-            user = FacebookProfile(likes=list_of_likes, statuses=statuses)
+            fb_id = json_dict['id']
+            name = json_dict['name']
+
+            user = FacebookProfile(id=fb_id, name=name, likes=list_of_likes,
+                                   statuses=statuses)
             return user
         except KeyError:
             raise FacebookException("The given information was incomplete.")
@@ -514,7 +523,7 @@ def get_facebook_information(access_token=None):
         print("Working in offline mode (no access token given).")
         disconnect()
 
-    fields = 'likes,statuses'
+    fields = 'id,name,likes,statuses'
 
     params = {'fields': fields, 'access_token': access_token}
 
@@ -550,3 +559,4 @@ def _get_photos(album):
         photolist.append(Photo._from_json(photo))
     return photolist
 
+#TODO: given a facebook user, return a list of his friends' friends
