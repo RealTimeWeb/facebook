@@ -18,12 +18,12 @@ class TestFacebook(unittest.TestCase):
     def test_get_facebook_information(self):
         facebook.connect()
 
-        keys = ['likes', 'statuses']
+        keys = ['id', 'name', 'likes', 'statuses']
 
         user_dict = facebook.get_facebook_information(ACCESS_TOKEN)
         self.assertTrue(isinstance(user_dict, dict))
         intersection = set(keys).intersection(user_dict)
-        self.assertEqual(2, len(intersection))
+        self.assertEqual(4, len(intersection))
 
         # Assure that the list of like dicts contain the following keys
         like_keys = ['name', 'category']
