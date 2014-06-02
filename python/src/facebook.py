@@ -491,15 +491,17 @@ def _fetch_facebook_info(params, fb_id):
     """
     baseurl = 'https://graph.facebook.com/{}'.format(fb_id)
     query = _urlencode(baseurl, params)
+    del params['access_token']
+    oquery = _urlencode(baseurl, params)
 
     if PYTHON_3:
         try:
-            result = _get(query) if _CONNECTED else _lookup(query)
+            result = _get(query) if _CONNECTED else _lookup(oquery)
         except urllib.error.HTTPError:
             raise FacebookException("Make sure your token is correct and valid")
     else:
         try:
-            result = _get(query) if _CONNECTED else _lookup(query)
+            result = _get(query) if _CONNECTED else _lookup(oquery)
         except urllib2.HTTPError:
             raise FacebookException("Make sure your token is correct and valid")
 
@@ -508,7 +510,7 @@ def _fetch_facebook_info(params, fb_id):
 
     try:
         if _CONNECTED and _EDITABLE:
-            _add_to_cache(query, result)
+            _add_to_cache(oquery, result)
         json_res = json.loads('[' + result + ']')  # Facebook does not return a
                                                     # list, but returns a string
     except ValueError:
@@ -536,6 +538,7 @@ def get_facebook_information(access_token=None, fb_id="me"):
 
     json_res = _fetch_facebook_info(params, fb_id)
     user = FacebookProfile._from_json(json_res)
+
 
     return user._to_dict()
 
