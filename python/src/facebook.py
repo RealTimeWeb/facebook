@@ -220,6 +220,10 @@ class FacebookException(Exception):
     pass
 
 
+class FacebookPermissionsException(Exception):
+    pass
+
+
 ################################################################################
 # Domain Objects
 ################################################################################
@@ -601,10 +605,10 @@ def get_friend_graph(access_token=None, fbid='me'):
 
     friend_graph = {}
     list_json = _get_friends_list(access_token, fbid)
-    #first_list = list_json['friends']['data']
     for friend in list_json:
-        # TODO: This breaks if you can't get the friends list of a friend
-        # not sure how to fix?
-        friend_graph[friend] = _get_friends_list(access_token, friend)
+        try:
+            friend_graph[friend] = _get_friends_list(access_token, friend)
+        except FacebookException:
+            friend_graph[friend] = []
 
     return friend_graph

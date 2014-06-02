@@ -49,11 +49,9 @@ class TestFacebook(unittest.TestCase):
         facebook.connect()
 
         # Test with no fbid
-        # currently breaks because if friends list is unavailable, it all dies
-        #print(facebook.get_friend_graph(ACCESS_TOKEN))
+        print(facebook.get_friend_graph(ACCESS_TOKEN))
         # Test with fbid
-        # currently breaks for the same reason, but we know it works with ids
-        #print(facebook.get_friend_graph(ACCESS_TOKEN, 660855297))
+        print(facebook.get_friend_graph(ACCESS_TOKEN, 660855297))
 
 
     #
