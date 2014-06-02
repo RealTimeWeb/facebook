@@ -591,6 +591,12 @@ def _get_friends_list(access_token=None, fbid='me'):
 
 def get_friend_graph(access_token=None, fbid='me'):
     """
+    Partially implemented. Facebook limits the friends that can be returned
+    to a certain subset, which severely limits the usefulness of this graph.
+    More information:
+    http://code-worrier.com/blog/changes-in-facebook-graph-api-2-dot-0/
+    https://stackoverflow.com/questions/8514664/getting-all-facebook-friends-using-graph-api
+
     Given a user, collect a list of that user's friends. Then, collect lists
     of all the friends of those users.
     :param str access_token: the access token needed for the API call
