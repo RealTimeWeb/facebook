@@ -566,7 +566,7 @@ def _get_photos(album):
 def _get_friends_list(access_token=None, fbid='me'):
     """
     Private helper function to get lists of friend ids
-    :param int access_token: the access token needed for the API call
+    :param str access_token: the access token needed for the API call
     :param fbid: user to grab the friends of
     :return: list of ids (the user's friends)
     """
@@ -577,7 +577,7 @@ def _get_friends_list(access_token=None, fbid='me'):
 
     params = {'fields': 'friends', 'access_token': access_token}
     friend_json = _fetch_facebook_info(params, fbid)
-    json_list = friend_json['friends']['data']
+    json_list = friend_json[0]['friends']['data']
     friend_list = []
     for friend in json_list:
         friend_list.append(friend['id'])
@@ -585,11 +585,11 @@ def _get_friends_list(access_token=None, fbid='me'):
     return friend_list
 
 
-def _get_friend_graph(access_token=None, fbid='me'):
+def get_friend_graph(access_token=None, fbid='me'):
     """
     Given a user, collect a list of that user's friends. Then, collect lists
     of all the friends of those users.
-    :param int access_token: the access token needed for the API call
+    :param str access_token: the access token needed for the API call
     :param int fbid: the user to build a friend graph of
     :return: a dictionary of IDs (the user's friends), mapped to lists of IDs
     (the friends of those friends)
@@ -601,9 +601,10 @@ def _get_friend_graph(access_token=None, fbid='me'):
 
     friend_graph = {}
     list_json = _get_friends_list(access_token, fbid)
-    first_list = list_json['friends']['data']
-    for friend in first_list:
-        friend_graph[friend['id']] = _get_friends_list(access_token, friend[
-            'id'])
+    #first_list = list_json['friends']['data']
+    for friend in list_json:
+        # TODO: This breaks if you can't get the friends list of a friend
+        # not sure how to fix?
+        friend_graph[friend] = _get_friends_list(access_token, friend)
 
     return friend_graph
