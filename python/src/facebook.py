@@ -79,7 +79,8 @@ def _recursively_convert_unicode_to_str(input):
 
     This works even if the input is a dict, list, or a string.
 
-    :params input: The bytes/unicode input dic
+    :params input: The bytes/unicode input
+    :returns str: The input converted to a `str`
     """
     if isinstance(input, dict):
         return {_recursively_convert_unicode_to_str(
