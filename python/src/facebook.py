@@ -79,7 +79,8 @@ def _recursively_convert_unicode_to_str(input):
 
     This works even if the input is a dict, list, or a string.
 
-    :params input: The bytes/unicode input dic
+    :params input: The bytes/unicode input
+    :returns str: The input converted to a `str`
     """
     if isinstance(input, dict):
         return {_recursively_convert_unicode_to_str(
@@ -217,6 +218,10 @@ def disconnect(filename="../src/cache.json"):
 
 
 class FacebookException(Exception):
+    pass
+
+
+class FacebookPermissionsException(Exception):
     pass
 
 
@@ -488,15 +493,17 @@ def _fetch_facebook_info(params, fb_id):
     """
     baseurl = 'https://graph.facebook.com/{}'.format(fb_id)
     query = _urlencode(baseurl, params)
+    del params['access_token']
+    oquery = _urlencode(baseurl, params)
 
     if PYTHON_3:
         try:
-            result = _get(query) if _CONNECTED else _lookup(query)
+            result = _get(query) if _CONNECTED else _lookup(oquery)
         except urllib.error.HTTPError:
             raise FacebookException("Make sure your token is correct and valid")
     else:
         try:
-            result = _get(query) if _CONNECTED else _lookup(query)
+            result = _get(query) if _CONNECTED else _lookup(oquery)
         except urllib2.HTTPError:
             raise FacebookException("Make sure your token is correct and valid")
 
@@ -588,6 +595,12 @@ def _get_friends_list(access_token=None, fb_id='me'):
 
 def _get_friend_graph(access_token=None, fb_id='me'):
     """
+    Partially implemented. Facebook limits the friends that can be returned
+    to a certain subset, which severely limits the usefulness of this graph.
+    More information:
+    http://code-worrier.com/blog/changes-in-facebook-graph-api-2-dot-0/
+    https://stackoverflow.com/questions/8514664/getting-all-facebook-friends-using-graph-api
+
     Given a user, collect a list of that user's friends. Then, collect lists
     of all the friends of those users.
     :param str access_token: the access token needed for the API call
