@@ -232,12 +232,12 @@ class Photo(object):
 
     A Facebook photo.
     """
-    def __init__(self, id=None, created_time=None, uploader=None, height=None,
-                 width=None, source=None):
+    def __init__(self, photo_id=None, created_time=None, uploader=None,
+                 height=None, width=None, source=None):
         """
         Creates a new photo object.
 
-        :param int id: the Facebook id of the photo
+        :param int photo_id: the Facebook id of the photo
         :param str created_time: the time and date the photo was uploaded
         :param uploader: the uploader of the photo
         #TODO: set uploader type
@@ -246,7 +246,7 @@ class Photo(object):
         :param str source: the url of the source image
         """
 
-        self.id = id
+        self.id = photo_id
         self.created_time = created_time
         self.uploader = uploader
         self.height = height
@@ -272,8 +272,9 @@ class Photo(object):
             width = json_data['images'][0]['width']
             source = json_data['images'][0]['source']
 
-            photo = Photo(id=photo_id, created_time=created_time, uploader=uploader,
-                          height=height, width=width, source=source)
+            photo = Photo(photo_id=photo_id, created_time=created_time,
+                          uploader=uploader, height=height, width=width,
+                          source=source)
             return photo
 
         except KeyError:
@@ -376,7 +377,7 @@ class FacebookProfile(object):
         Creates a new FacebookUser
 
         :param fb_id: The Facebook ID of the user
-        :tyfb_id id: int
+        :type fb_id: int
 
         :param albums: A list of albums where each album is a dictionary.
         :type albums: list
@@ -482,7 +483,7 @@ def _fetch_facebook_info(params, fb_id):
     Internal method to form and query the server
 
     :param dict params: the parameters to pass to the server
-    :param fb_id: id of the thing to look up, defaults to "me"
+    :param str fb_id: id of the thing to look up, defaults to "me"
     :returns: the JSON response object
     """
     baseurl = 'https://graph.facebook.com/{}'.format(fb_id)
@@ -519,7 +520,7 @@ def get_facebook_information(access_token=None, fb_id="me"):
     and return the response.
 
     :param str access_token: the secret used to authenticate to Facebook
-    :param fb_id: the id of the user to look up, defaults to "me"
+    :param str fb_id: the id of the user to look up, defaults to "me"
     :returns: a dictionary containing the information of the user
     """
     if access_token is None:
@@ -557,17 +558,17 @@ def _get_photos(album):
     :param dict album: the album to get the photos from
     :returns: list of Photos
     """
-    photolist = []
+    photo_list = []
     for photo in album['photos']['data']:
-        photolist.append(Photo._from_json(photo))
-    return photolist
+        photo_list.append(Photo._from_json(photo))
+    return photo_list
 
 
-def _get_friends_list(access_token=None, fbid='me'):
+def _get_friends_list(access_token=None, fb_id='me'):
     """
     Private helper function to get lists of friend ids
-    :param int access_token: the access token needed for the API call
-    :param fbid: user to grab the friends of
+    :param str access_token: the access token needed for the API call
+    :param str fb_id: user to grab the friends of
     :return: list of ids (the user's friends)
     """
 
@@ -576,8 +577,8 @@ def _get_friends_list(access_token=None, fbid='me'):
         disconnect()
 
     params = {'fields': 'friends', 'access_token': access_token}
-    friend_json = _fetch_facebook_info(params, fbid)
-    json_list = friend_json['friends']['data']
+    friend_json = _fetch_facebook_info(params, fb_id)
+    json_list = friend_json[0]['friends']['data']
     friend_list = []
     for friend in json_list:
         friend_list.append(friend['id'])
@@ -585,12 +586,12 @@ def _get_friends_list(access_token=None, fbid='me'):
     return friend_list
 
 
-def _get_friend_graph(access_token=None, fbid='me'):
+def _get_friend_graph(access_token=None, fb_id='me'):
     """
     Given a user, collect a list of that user's friends. Then, collect lists
     of all the friends of those users.
-    :param int access_token: the access token needed for the API call
-    :param int fbid: the user to build a friend graph of
+    :param str access_token: the access token needed for the API call
+    :param str fb_id: the user to build a friend graph of
     :return: a dictionary of IDs (the user's friends), mapped to lists of IDs
     (the friends of those friends)
     """
