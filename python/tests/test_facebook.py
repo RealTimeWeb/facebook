@@ -17,7 +17,38 @@ class TestFacebook(unittest.TestCase):
 
     def test_get_facebook_information(self):
         facebook.connect()
+        facebook._start_editing()
 
+        keys = ['id', 'name', 'likes', 'statuses']
+
+        user_dict = facebook.get_facebook_information(ACCESS_TOKEN)
+        facebook._save_cache()
+        self.assertTrue(isinstance(user_dict, dict))
+        intersection = set(keys).intersection(user_dict)
+        self.assertEqual(4, len(intersection))
+
+        # Assure that the list of like dicts contain the following keys
+        like_keys = ['name', 'category']
+
+        likes = user_dict['likes']
+        self.assertTrue(isinstance(like_keys, list))
+        for like in likes:
+            self.assertTrue(isinstance(like, dict))
+            intersection = set(like_keys).intersection(like)
+            self.assertEqual(2, len(intersection))
+
+        # Assure that the list of status dicts contain the following keys
+        status_keys = ['message', 'from', 'id', 'updated_time']
+
+        statuses = user_dict['statuses']
+        self.assertTrue(isinstance(status_keys, list))
+        for status in statuses:
+            self.assertTrue(isinstance(status, dict))
+            intersection = set(status_keys).intersection(status)
+            self.assertEqual(4, len(intersection))
+
+    def test_offline_get_facebook_information(self):
+        facebook.disconnect('./cache.json')
         keys = ['id', 'name', 'likes', 'statuses']
 
         user_dict = facebook.get_facebook_information(ACCESS_TOKEN)
@@ -44,6 +75,61 @@ class TestFacebook(unittest.TestCase):
             self.assertTrue(isinstance(status, dict))
             intersection = set(status_keys).intersection(status)
             self.assertEqual(4, len(intersection))
+
+
+    def test_get_others_facebook_information(self):
+        facebook.connect()
+        facebook._start_editing()
+
+        keys = ['id', 'name', 'statuses']
+
+        user_dict = facebook.get_facebook_information(ACCESS_TOKEN, fb_id="660855297")
+        facebook._save_cache()
+        self.assertTrue(isinstance(user_dict, dict))
+        intersection = set(keys).intersection(user_dict)
+        self.assertEqual(3, len(intersection))
+
+        # Assure that the list of status dicts contain the following keys
+        status_keys = ['message', 'from', 'id', 'updated_time']
+
+        statuses = user_dict['statuses']
+        self.assertTrue(isinstance(status_keys, list))
+        for status in statuses:
+            self.assertTrue(isinstance(status, dict))
+            intersection = set(status_keys).intersection(status)
+            self.assertEqual(4, len(intersection))
+
+
+    def test_offline_get_others_facebook_information(self):
+        facebook.disconnect('./cache.json')
+        keys = ['id', 'name', 'likes', 'statuses']
+
+        user_dict = facebook.get_facebook_information(ACCESS_TOKEN, fb_id="660855297")
+        self.assertTrue(isinstance(user_dict, dict))
+        intersection = set(keys).intersection(user_dict)
+        self.assertEqual(4, len(intersection))
+
+        # Assure that the list of like dicts contain the following keys
+        like_keys = ['name', 'category']
+
+        likes = user_dict['likes']
+        self.assertTrue(isinstance(like_keys, list))
+        for like in likes:
+            self.assertTrue(isinstance(like, dict))
+            intersection = set(like_keys).intersection(like)
+            self.assertEqual(2, len(intersection))
+
+        # Assure that the list of status dicts contain the following keys
+        status_keys = ['message', 'from', 'id', 'updated_time']
+
+        statuses = user_dict['statuses']
+        self.assertTrue(isinstance(status_keys, list))
+        for status in statuses:
+            self.assertTrue(isinstance(status, dict))
+            intersection = set(status_keys).intersection(status)
+            self.assertEqual(4, len(intersection))
+
+
 
     #
     # def test_get_stock_offline(self):

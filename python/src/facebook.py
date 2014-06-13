@@ -512,7 +512,7 @@ def _fetch_facebook_info(params, fb_id):
 
     try:
         if _CONNECTED and _EDITABLE:
-            _add_to_cache(query, result)
+            _add_to_cache(oquery, result)
         json_res = json.loads('[' + result + ']')  # Facebook does not return a
                                                     # list, but returns a string
     except ValueError:
@@ -540,6 +540,7 @@ def get_facebook_information(access_token=None, fb_id="me"):
 
     json_res = _fetch_facebook_info(params, fb_id)
     user = FacebookProfile._from_json(json_res)
+
 
     return user._to_dict()
 
@@ -614,10 +615,11 @@ def _get_friend_graph(access_token=None, fb_id='me'):
         disconnect()
 
     friend_graph = {}
-    list_json = _get_friends_list(access_token, fbid)
-    first_list = list_json['friends']['data']
-    for friend in first_list:
-        friend_graph[friend['id']] = _get_friends_list(access_token, friend[
-            'id'])
+    list_json = _get_friends_list(access_token, fb_id)
+    for friend in list_json:
+        try:
+            friend_graph[friend] = _get_friends_list(access_token, friend)
+        except FacebookException:
+            friend_graph[friend] = []
 
     return friend_graph
