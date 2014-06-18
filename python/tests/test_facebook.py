@@ -48,7 +48,7 @@ class TestFacebook(unittest.TestCase):
             self.assertEqual(4, len(intersection))
 
     def test_offline_get_facebook_information(self):
-        facebook.disconnect('./cache.json')
+        facebook.disconnect('../src/cache.json')
         keys = ['id', 'name', 'likes', 'statuses']
 
         user_dict = facebook.get_facebook_information(ACCESS_TOKEN)
@@ -99,9 +99,8 @@ class TestFacebook(unittest.TestCase):
             intersection = set(status_keys).intersection(status)
             self.assertEqual(4, len(intersection))
 
-
     def test_offline_get_others_facebook_information(self):
-        facebook.disconnect('./cache.json')
+        facebook.disconnect('../src/cache.json')
         keys = ['id', 'name', 'likes', 'statuses']
 
         user_dict = facebook.get_facebook_information(ACCESS_TOKEN, fb_id="660855297")
