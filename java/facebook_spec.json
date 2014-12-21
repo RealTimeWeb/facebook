@@ -1,0 +1,176 @@
+{
+    "metadata": {
+        "name": "Facebook Service",
+        "description": "Online Social Network",
+        "version": 1,
+        "author": "Peeratham Techapalokul",
+        "contact": "tpeera4@vt.edu"
+    },
+    "objects": {
+        "Post": {
+            "description": "An individual entry in a profile's feed.",
+            "format": "json",
+            "comment": "https://developers.facebook.com/docs/graph-api/reference/v2.2/post",
+            "fields": {
+                "id": {
+                    "type": "string",
+                    "path": "id",
+                    "description": "The post ID",
+                    "order": 0
+                },
+                "from": {
+                    "type": "User",
+                    "path": "from",
+                    "description": "Information about the user that posted the message.",
+                    "order": 1
+                },
+                "to": {
+                    "type": "User[]",
+                    "path": "to.data",
+                    "description": "Users mentioned or targeted in this post.",
+                    "order": 2
+                },
+                "message": {
+                    "type": "string",
+                    "path": "message",
+                    "description": "The main body of the post, otherwise called the status message.",
+                    "order": 3
+                },
+                "picture": {
+                    "type": "string",
+                    "path": "picture",
+                    "description": "The picture scraped from any link included with the post.",
+                    "order": 4
+                },
+                "link": {
+                    "type": "string",
+                    "path": "link",
+                    "description": "The link attached to this post.",
+                    "order": 5
+                },
+                "video": {
+                    "type": "string",
+                    "path": "source",
+                    "description": "A URL to any Flash movie or video file attached to the post.",
+                    "order": 6
+                },
+                "name": {
+                    "type": "string",
+                    "path": "name",
+                    "description": "The name of the link.",
+                    "order": 7
+                },
+                "description": {
+                    "type": "string",
+                    "path": "description",
+                    "description": "A description of a link in the post (appears beneath the caption).",
+                    "order": 8
+                },
+                "type": {
+                    "type": "string",
+                    "path": "type",
+                    "description": "A string indicating the object type of this post.",
+                    "order": 9
+                },
+                "createdTime": {
+                    "type": "string",
+                    "path": "type",
+                    "description": "The time the post was initially published.",
+                    "order": 10
+                },
+                "updatedTime": {
+                    "type": "string",
+                    "path": "updated_time",
+                    "description": "The time of the last change to this post, or the comments on it.",
+                    "order": 11
+                },
+                "likes": {
+                    "type": "User[]",
+                    "path": "likes.data",
+                    "description": "People who like this post.",
+                    "order": 12
+                },
+                "comments": {
+                    "type": "Comment[]",
+                    "path": "comments.data",
+                    "description": "Comments on this post.",
+                    "order": 13
+                }
+            }
+        },
+        "User": {
+            "description": "A user represents a person on Facebook.",
+            "comment": "https://developers.facebook.com/docs/graph-api/reference/v2.2/user",
+            "format": "json",
+            "fields": {
+                "id": {
+                    "type": "string",
+                    "path": "id",
+                    "description": "The id of this person's user account.",
+                    "order": 0
+                },
+                "name": {
+                    "type": "string",
+                    "path": "name",
+                    "description": "The person's full name",
+                    "order": 1
+                }
+            }
+        },
+        "Comment": {
+            "description": "A comment to a post.",
+            "comment": "https://developers.facebook.com/docs/graph-api/reference/v2.2/comment",
+            "format": "json",
+            "fields": {
+                "id": {
+                    "type": "string",
+                    "path": "id",
+                    "description": "The comment ID",
+                    "order": 0
+                },
+                "from": {
+                    "type": "User",
+                    "path": "from",
+                    "description": "The person that made this comment",
+                    "order": 1
+                },
+                "message": {
+                    "type": "string",
+                    "path": "message",
+                    "description": "The comment text",
+                    "order": 2
+                }
+            }
+        }
+    },
+    "functions": {
+        "get feed": {
+            "url": "https://graph.facebook.com/v1.0/me?fields=feed.limit(<limit>)&access_token=<access_token>",
+            "verb": "get",
+            "description": "The feed of posts (including status updates) and links published by this person, or by others on this person's profile.",
+            "comment": "https://developers.facebook.com/docs/graph-api/reference/v2.2/user/feed",
+            "output": "Post[]",
+            "format": "json",
+            "post": "feed.data",
+            "inputs": {
+                "limit": {
+                    "path": "limit",
+                    "type": "integer",
+                    "description": "Specify how many posts will be retrieved",
+                    "hidden": false,
+                    "indexable": true,
+                    "order": 0
+                },
+                "access token": {
+                    "path": "access_token",
+                    "type": "string",
+                    "comment": "A user access token with read_stream permission is required.",
+                    "description": "The user's access token. Need Extended Permission: read_stream",
+                    "hidden": false,
+                    "indexable": true,
+                    "order": 1
+                }
+            }
+        }
+    }
+}
