@@ -1,4 +1,4 @@
-StockService
+Facebook Service
 ============
 
-Get the latest information about stocks.
+Get your latest Facebook posts.
